@@ -128,9 +128,8 @@ class PDFRenditionService
 		}
 	}
 
-	public function renderPage($page, $outputTo = null) {
+	public function renderPage($page, $action='', $outputTo = null) {
 		$link = Director::makeRelative($page->Link());
-
 		return $this->renderUrl($link);
 	}
 }

@@ -92,7 +92,7 @@ class PDFRenditionService
 		$retVal = exec($cmd, $output, $return);
 
 		if (!file_exists($out)) {
-			throw new Exception("Could not generate pdf for $outputTo");
+			throw new Exception("Could not generate pdf: ".var_export($output, true));
 		}
 
 		unlink($in);
@@ -129,7 +129,7 @@ class PDFRenditionService
 	}
 
 	public function renderPage($page, $action='', $outputTo = null) {
-		$link = Director::makeRelative($page->Link());
+		$link = Director::makeRelative($page->Link($action));
 		return $this->renderUrl($link);
 	}
 }

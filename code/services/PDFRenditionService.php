@@ -33,21 +33,25 @@ class PDFRenditionService
 	public static $java_bin = "/usr/bin/java";
 
 	public function __construct() {
-		
+
 	}
-    
+
 	/**
-	 * Renders passed in content to a PDF. 
-	 * 
+	 * Renders passed in content to a PDF.
+	 *
 	 * If $outputTo == '', then the temporary filename is returned, with the expectation
 	 * that the caller will correctly handle the streaming of the content.
 	 *
 	 * @param String $content
 	 *			Raw content to render into a pdf
 	 * @param String $outputTo
-	 *			a filename to output to
+	 *				'file' or 'browser'
+	 * @param String $outname
+	 *				A filename if the pdf is sent direct to the browser
+	 * @return String
+	 *				The filename of the output file
 	 */
-	public function render($content, $outputTo = null) {
+	public function render($content, $outputTo = null, $outname='') {
 		$tempFolder = getTempFolder();
 		if (!is_dir($tempFolder)) {
 			throw new Exception("Could not find TMP directory");
@@ -65,7 +69,7 @@ class PDFRenditionService
 
 		$in = tempnam($pdfFolder, "html_");
 		file_put_contents($in, $content);
-		
+
 		$mid = tempnam($pdfFolder, "xhtml_");
 
 		$out = tempnam($pdfFolder, "pdf_") . '.pdf';
@@ -75,9 +79,16 @@ class PDFRenditionService
 			$tidy = "tidy";
 		}
 
-		$cmd = "$tidy -utf8 -output $mid $in";
+		$escapefn = 'escapeshellarg';
+
+		$cmd = "$tidy -utf8 -output ".$escapefn($mid).' '.$escapefn($in);
+
 		// first we need to tidy the content
-		@exec($cmd, $output, $return);
+		exec($cmd, $output, $return);
+
+		if (filesize($mid) <= 0) {
+			throw new Exception("Invalid Tidy output from command $cmd: ".print_r($output, true)."\n".print_r($return, true));
+		}
 
 		// then run it through our pdfing thing
 		$jarPath = dirname(dirname(dirname(__FILE__))).'/thirdparty/xhtmlrenderer';
@@ -88,21 +99,39 @@ class PDFRenditionService
 			$cmd = "java";
 		}
 
-		$cmd = "$cmd -classpath $classpath org.xhtmlrenderer.simple.PDFRenderer $mid $out";
+		$cmd = "$cmd -classpath ".$escapefn($classpath)." org.xhtmlrenderer.simple.PDFRenderer ".$escapefn($mid).' '.$escapefn($out);
 		$retVal = exec($cmd, $output, $return);
 
 		if (!file_exists($out)) {
-			throw new Exception("Could not generate pdf: ".var_export($output, true));
+			throw new Exception("Could not generate pdf using command $cmd: ".var_export($output, true));
 		}
 
 		unlink($in);
 		unlink($mid);
 
-		if (!$outputTo) {
+		if (!$outputTo == 'browser') {
 			return $out;
 		}
 
+		if (file_exists($out)) {
+			$size = filesize($out);
+			$type = "application/pdf";
+			$name = urlencode(htmlentities($outname));
+			if (!headers_sent()) {
+				header('Content-disposition: attachment; filename='.$name);
+				header('Content-type: application/pdf'); //octet-stream');
+				header('Content-Length: '.$size);
+				readfile($out);
+			} else {
+				echo "Invalid file";
+			}
+		}
+
 		unlink($out);
+	}
+
+	protected function sendToBrowser() {
+
 	}
 
 	/**
@@ -112,7 +141,7 @@ class PDFRenditionService
 	 *			A relative URL that silverstripe can execute
 	 * @param String $outputTo
 	 */
-	public function renderUrl($url, $outputTo = null) {
+	public function renderUrl($url, $outputTo = null, $outname='') {
 		if (strpos($url, '/') === 0) {
 			// fix it
 			$url = Director::makeRelative($url);
@@ -122,15 +151,25 @@ class PDFRenditionService
 		// do a 'test' request, making sure to keep the current session active
 		$response = Director::test($url, null, new Session($_SESSION));
 		if ($response->getStatusCode() == 200) {
-			return $this->render($response->getBody());
+			return $this->render($response->getBody(), $outputTo, $outname);
 		} else {
 			throw new Exception("Failed rendering URL $url: ".$response->getStatusCode()." - ".$response->getStatusDescription());
 		}
 	}
 
-	public function renderPage($page, $action='', $outputTo = null) {
+	/**
+	 *
+	 * @param SiteTree $page
+	 *				The page that should be rendered
+	 * @param String $action
+	 *				An action for the page to render
+	 * @param String $outputTo
+	 *				'file' or 'browser'
+	 * @return String
+	 *				The filename of the output file
+	 */
+	public function renderPage($page, $action='', $outputTo = null, $outname='') {
 		$link = Director::makeRelative($page->Link($action));
-		return $this->renderUrl($link);
+		return $this->renderUrl($link, $outputTo, $outname);
 	}
 }
-?>

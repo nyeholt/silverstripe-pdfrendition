@@ -68,27 +68,21 @@ class PDFRenditionService
 		}
 
 		$in = tempnam($pdfFolder, "html_");
+
+		$content = str_replace('&nbsp;', '&#160;', $content);
+
 		file_put_contents($in, $content);
 
 		$mid = tempnam($pdfFolder, "xhtml_");
 
 		$out = tempnam($pdfFolder, "pdf_") . '.pdf';
 
-		$tidy = self::$tidy_bin;
-		if (!is_executable($tidy)) {
-			$tidy = "tidy";
+		if (class_exists('Tidy')) {
+			$this->tidyHtml($in, $mid);
+		} else {
+			$this->tidyHtmlExternal($in, $mid);
 		}
-
-		$escapefn = 'escapeshellarg';
-
-		$cmd = "$tidy -utf8 -output ".$escapefn($mid).' '.$escapefn($in);
-
-		// first we need to tidy the content
-		exec($cmd, $output, $return);
-
-		if (filesize($mid) <= 0) {
-			throw new Exception("Invalid Tidy output from command $cmd: ".print_r($output, true)."\n".print_r($return, true));
-		}
+		
 
 		// then run it through our pdfing thing
 		$jarPath = dirname(dirname(dirname(__FILE__))).'/thirdparty/xhtmlrenderer';
@@ -98,6 +92,8 @@ class PDFRenditionService
 		if (!is_executable($cmd)) {
 			$cmd = "java";
 		}
+
+		$escapefn = 'escapeshellarg';
 
 		$cmd = "$cmd -classpath ".$escapefn($classpath)." org.xhtmlrenderer.simple.PDFRenderer ".$escapefn($mid).' '.$escapefn($out);
 		$retVal = exec($cmd, $output, $return);
@@ -130,8 +126,37 @@ class PDFRenditionService
 		unlink($out);
 	}
 
-	protected function sendToBrowser() {
+	protected function tidyHtml($input, $output) {
+		$tidy_config    =    array(
+			'clean'                            =>    true,
+			'quote-nbsp'					=> false,
+			'drop-proprietary-attributes'    =>    true,
+			'output-xhtml'                    =>    true,
+			'word-2000'                        =>    true,
+			'wrap'                            =>    '0'
+		);
 
+		$tidy = new tidy;
+		$out = $tidy->repairFile($input, $tidy_config, 'utf8');
+		file_put_contents($output, $out);
+	}
+
+	protected function tidyHtmlExternal($input, $output) {
+		$tidy = self::$tidy_bin;
+		if (!is_executable($tidy)) {
+			$tidy = "tidy";
+		}
+
+		$escapefn = 'escapeshellarg';
+
+		$cmd = "$tidy -utf8 --quote-nbsp=false -output ".$escapefn($output).' '.$escapefn($input);
+
+		// first we need to tidy the content
+		exec($cmd, $out, $return);
+
+		if (filesize($output) <= 0) {
+			throw new Exception("Invalid Tidy output from command $cmd: ".print_r($out, true)."\n".print_r($return, true));
+		}
 	}
 
 	/**

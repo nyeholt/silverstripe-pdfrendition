@@ -49,6 +49,8 @@ class PDFRenditionService
 		}
 
 		$in = tempnam($pdfFolder, "html_");
+		
+		$content = $this->fixLinks($content);
 
 		$content = str_replace('&nbsp;', '&#160;', $content);
 
@@ -138,6 +140,34 @@ class PDFRenditionService
 		if (filesize($output) <= 0) {
 			throw new Exception("Invalid Tidy output from command $cmd: ".print_r($out, true)."\n".print_r($return, true));
 		}
+	}
+	
+	/**
+	 * Fixes URLs in images, link and a tags to refer to correct things relevant to the base tag. 
+	 *
+	 * @param String $contentFile
+	 *				The name of the file to fix links within
+	 */
+	protected function fixLinks($content) {
+		$value = new SS_HTMLValue($content);
+		
+		$base = $value->getElementsByTagName('base');
+		if ($base) {
+			$base = $base->item(0)->getAttribute('href');
+			$check = array('a' => 'href', 'link'=>'href', 'img'=>'src');
+			foreach ($check as $tag => $attr) {
+				if($items = $value->getElementsByTagName($tag)) {
+					foreach($items as $item) {
+						$href = $item->getAttribute($attr);
+						if ($href && $href{0} != '/' && strpos($href, '://') === false) {
+							$item->setAttribute($attr, $base . $href);
+						}
+					}
+				}
+			}
+		}
+
+		return $value->getContent();
 	}
 
 	/**

@@ -1,0 +1,6 @@
+
+2010-12-20 v0.1.1
+-----------------
+
+* Update to forcefully add the value of the base tag to URLs in content as the
+  Flying Saucer library doesn't seem to understand it properly

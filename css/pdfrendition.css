@@ -1,0 +1,68 @@
+* { background: transparent !important; color: #444 !important; text-shadow: none !important; }
+
+a, a:visited { color: #444 !important; text-decoration: underline; }
+
+abbr:after { content: " (" attr(title) ")"; }
+
+pre, blockquote { border: 1px solid #999; page-break-inside: avoid; }
+
+thead { display: table-header-group; } /* css-discuss.incutio.com/wiki/Printing_Tables */ 
+
+tr, img { page-break-inside: avoid; }
+
+#PdfHeader { position: running(header); display: block; padding: .5em; border-bottom: 1px solid #000; margin: 0px 5%; }
+#PdfFooter { position: running(footer); display: block; padding: .5em; font-size: 66%; font-style: italic; border-top: 1px solid #000; }
+
+@page {
+	size: A4 portrait;
+	margin: 2cm 1cm;
+
+	@top-center {
+		content: element(header);
+	}
+
+	@bottom-left {
+        content: element(footer);
+    }
+}
+
+@page portrait {
+	size: A4 portrait;
+	margin: 2cm 1cm;
+
+	@top-center {
+		content: element(header);
+	}
+
+	@bottom-left {
+        content: element(footer);
+    }
+}
+
+@page landscape {
+	size: A4 landscape;
+	margin: 2cm 1cm;
+
+	@top-center {
+		content: element(header);
+	}
+
+	@bottom-left {
+        content: element(footer);
+    }
+}
+
+#pagenumber:before { content: counter(page); }
+#pagecount:before { content: counter(pages); }
+
+div.landscape { page: landscape; width: 27.5cm; }
+div.portrait { page: portrait; width: 18.8cm; }
+ 
+.printHidden, #NavSection, #Left, header, .pageHeader { display: none; }
+#Container { width: 100%; border: none; overflow: visible; }
+#CenterRight { width: 100%; margin: 0px; border: none; }
+
+#PrintCoverPage { width: 50%; margin: 0px auto; text-align: center; display: block;}
+
+.printLogo { margin: 0px auto; width: 174px; height: 180px; }
+.printOnly { display: block !important;}

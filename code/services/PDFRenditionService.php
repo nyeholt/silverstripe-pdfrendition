@@ -132,7 +132,7 @@ class PDFRenditionService
 
 		$escapefn = 'escapeshellarg';
 
-		$cmd = "$tidy -utf8 --quote-nbsp=false -output ".$escapefn($output).' '.$escapefn($input);
+		$cmd = "$tidy -utf8 -asxhtml -output ".$escapefn($output).' '.$escapefn($input);
 
 		// first we need to tidy the content
 		exec($cmd, $out, $return);

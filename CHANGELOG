@@ -1,3 +1,9 @@
+2011-02-14 v1.0.0
+-----------------
+
+* Fixed error when rendered template doesn't have a base tag
+* Tag for first release
+
 2011-02-07 v0.1.2
 -----------------
 

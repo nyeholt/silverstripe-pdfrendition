@@ -152,7 +152,7 @@ class PDFRenditionService
 		$value = new SS_HTMLValue($content);
 		
 		$base = $value->getElementsByTagName('base');
-		if ($base) {
+		if ($base && $base->item(0)) {
 			$base = $base->item(0)->getAttribute('href');
 			$check = array('a' => 'href', 'link'=>'href', 'img'=>'src');
 			foreach ($check as $tag => $attr) {

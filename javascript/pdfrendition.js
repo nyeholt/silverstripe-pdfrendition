@@ -28,6 +28,25 @@
 
 			return false;
 		});
+		
+		$('#right input[name=action_preview]').live('click', function () {
+			var form = $('#right form');
+			var formAction = form.attr('action') + '?' + $(this).fieldSerialize();
+
+			// @todo TinyMCE coupling
+			if(typeof tinyMCE != 'undefined') tinyMCE.triggerSave();
+
+			// Post the data to save
+			$.post(formAction, form.formToArray(), function(result){
+				// @todo TinyMCE coupling
+				tinymce_removeAll();
+
+				var newWindow = window.open();
+				newWindow.innerHTML = result;
+			}, 'html');
+
+			return false;
+		})
 	})
 	
 })(jQuery);

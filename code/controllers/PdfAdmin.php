@@ -28,7 +28,8 @@ class PdfAdmin_RecordController extends ModelAdmin_RecordController {
 	public function compose($data, Form $form, $request) {
 		$record = $this->getCurrentRecord();
 		if ($record) {
-			$record->getComposedContent();
+			// lets generate the pdf with the give template
+			$record->createPdf();
 		}
 		
 		// Behaviour switched on ajax.
@@ -36,6 +37,16 @@ class PdfAdmin_RecordController extends ModelAdmin_RecordController {
 			return $this->edit($request);
 		} else {
 			Director::redirectBack();
+		}
+	}
+	
+	public function preview() {
+		$record = $this->getCurrentRecord();
+		if ($record && $record->Template) {
+			// lets generate the pdf with the give template
+			echo $record->renderWith($record->Template);
+		} else {
+			echo "No template found";
 		}
 	}
 }

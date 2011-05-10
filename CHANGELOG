@@ -1,3 +1,10 @@
+2011-05-10 v1.1.0
+-----------------
+
+* Added ability to 'compose' a pdf document based on content from a backend
+  interface. Templates can be defined that allow the specification of complex
+  PDFs using content aggregations etc. 
+
 2011-02-14 v1.0.0
 -----------------
 

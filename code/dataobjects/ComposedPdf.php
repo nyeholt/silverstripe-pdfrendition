@@ -28,13 +28,20 @@ class ComposedPdf extends DataObject {
 	
 	public function onBeforeWrite() {
 		parent::onBeforeWrite();
-		if (!$this->Title) {
+		if ($this->ID && !$this->Title) {
+			
 			throw new Exception("Invalid title");
 		}
 	}
 	
 	public function getCMSFields() {
 		$fields = parent::getCMSFields();
+		
+		if ($this->ID) {
+			$fields->addFieldToTab('Root.Main', new LiteralField('PreviewLink', '<a href="admin/pdfs/previewpdf?ID=' . $this->ID.'" target="_blank">Preview</a>'), 'Description');
+		}
+		
+		$fields->addFieldToTab('Root.Main', new CheckboxField('TableOfContents', _t('ComposedPdf.TOC', 'Table of contents?')), 'Description');
 		$fields->addFieldToTab('Root.Main', new DropdownField('Template', _t('ComposedPdf.TEMPLATE', 'Template'), $this->templateSource()), 'Description');
 		$fields->addFieldToTab('Root.Main', new TreeDropdownField('PageID', _t('ComposedPdf.ROOT_PAGE', 'Root Page'), 'Page'), 'Description');
 		
@@ -66,12 +73,10 @@ class ComposedPdf extends DataObject {
 	public function getCMSActions() {
 		$actions = parent::getCMSActions();
 		$actions->push(new FormAction('compose', _t('ComposedPdf.COMPOSE', 'Compose')));
-		$actions->push(new FormAction('preview', _t('ComposedPdf.PREVIEW', 'Preview')));
 		return $actions;
 	}
 	
 	public function createPdf() {
-		
 		$storeIn = $this->getStorageFolder();
 		$name = ereg_replace(' +','-',trim($this->Title));
 		$name = ereg_replace('[^A-Za-z0-9.+_\-]','',$name);
@@ -92,13 +97,20 @@ class ComposedPdf extends DataObject {
 		$file->setName($name);
 		$file->write();
 
-		Requirements::clear();
-		$content = $this->renderWith($this->Template);
+		$content = $this->renderPdf();
 		$filename = singleton('PdfRenditionService')->render($content);
-		Requirements::restore();
+		
 		if (file_exists($filename)) {
 			copy($filename, $file->getFullPath());
 		}
+	}
+
+	public function renderPdf() {
+		Requirements::clear();
+		$content = $this->renderWith($this->Template);
+		Requirements::restore();
+		
+		return $content;
 	}
 	
 	protected function getStorageFolder() {
@@ -159,6 +171,4 @@ class ComposedPdf extends DataObject {
 		}
 		return $templates;
 	}
-	
-
 }

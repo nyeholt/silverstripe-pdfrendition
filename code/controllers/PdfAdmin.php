@@ -7,14 +7,29 @@
  * @license BSD http://silverstripe.org/BSD-license
  */
 class PdfAdmin extends ModelAdmin {
-	public static $url_segment = 'pdf';
+	public static $url_rule = '/$Action';
+	public static $url_segment = 'pdfs';
 	public static $menu_title = 'PDFs';
 	public static $managed_models = array(
 		'ComposedPdf',
 	);
 	
-	
 	public static $record_controller_class = "PdfAdmin_RecordController";
+	
+	/**
+	 * Preview the pdf file
+	 *
+	 * @return String 
+	 */
+	public function previewpdf() {
+		$id = $this->request->getVar('ID');
+		if ($id) {
+			$pdf = DataObject::get_by_id('ComposedPdf', $id);
+			if ($pdf->canView()) {
+				return $pdf->renderPdf();
+			}
+		}
+	}
 }
 
 

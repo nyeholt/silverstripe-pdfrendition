@@ -6,15 +6,13 @@
  * @author Marcus Nyeholt <marcus@silverstripe.com.au>
  * @license http://silverstripe.org/bsd-license/
  */
-class PDFRenditionService
-{
+class PDFRenditionService {
 
 	public static $tidy_bin = "/usr/bin/tidy";
-
 	public static $java_bin = "/usr/bin/java";
 
 	public function __construct() {
-
+		
 	}
 
 	/**
@@ -24,13 +22,13 @@ class PDFRenditionService
 	 * that the caller will correctly handle the streaming of the content.
 	 *
 	 * @param String $content
-	 *			Raw content to render into a pdf
+	 * 			Raw content to render into a pdf
 	 * @param String $outputTo
-	 *				'file' or 'browser'
+	 * 				'file' or 'browser'
 	 * @param String $outname
-	 *				A filename if the pdf is sent direct to the browser
+	 * 				A filename if the pdf is sent direct to the browser
 	 * @return String
-	 *				The filename of the output file
+	 * 				The filename of the output file
 	 */
 	public function render($content, $outputTo = null, $outname='') {
 		$tempFolder = getTempFolder();
@@ -38,7 +36,7 @@ class PDFRenditionService
 			throw new Exception("Could not find TMP directory");
 		}
 
-		$pdfFolder = $tempFolder.'/pdfrenditions';
+		$pdfFolder = $tempFolder . '/pdfrenditions';
 
 		if (!file_exists($pdfFolder)) {
 			@mkdir($pdfFolder);
@@ -49,7 +47,7 @@ class PDFRenditionService
 		}
 
 		$in = tempnam($pdfFolder, "html_");
-		
+
 		$content = $this->fixLinks($content);
 
 		$content = str_replace('&nbsp;', '&#160;', $content);
@@ -65,11 +63,11 @@ class PDFRenditionService
 		} else {
 			$this->tidyHtmlExternal($in, $mid);
 		}
-		
+
 
 		// then run it through our pdfing thing
-		$jarPath = dirname(dirname(dirname(__FILE__))).'/thirdparty/xhtmlrenderer';
-		$classpath = $jarPath.'/core-renderer.jar'.PATH_SEPARATOR.$jarPath.'/iText-2.0.8.jar';
+		$jarPath = dirname(dirname(dirname(__FILE__))) . '/thirdparty/xhtmlrenderer';
+		$classpath = $jarPath . '/core-renderer.jar' . PATH_SEPARATOR . $jarPath . '/iText-2.0.8.jar';
 
 		$cmd = self::$java_bin;
 		if (!is_executable($cmd)) {
@@ -78,11 +76,11 @@ class PDFRenditionService
 
 		$escapefn = 'escapeshellarg';
 
-		$cmd = "$cmd -classpath ".$escapefn($classpath)." org.xhtmlrenderer.simple.PDFRenderer ".$escapefn($mid).' '.$escapefn($out);
+		$cmd = "$cmd -classpath " . $escapefn($classpath) . " org.xhtmlrenderer.simple.PDFRenderer " . $escapefn($mid) . ' ' . $escapefn($out);
 		$retVal = exec($cmd, $output, $return);
 
 		if (!file_exists($out)) {
-			throw new Exception("Could not generate pdf using command $cmd: ".var_export($output, true));
+			throw new Exception("Could not generate pdf using command $cmd: " . var_export($output, true));
 		}
 
 		unlink($in);
@@ -97,9 +95,16 @@ class PDFRenditionService
 			$type = "application/pdf";
 			$name = urlencode(htmlentities($outname));
 			if (!headers_sent()) {
-				header('Content-disposition: attachment; filename='.$name);
+				// set cache-control headers explicitly for https traffic, otherwise no-cache will be used,
+				// which will break file attachments in IE
+				// Thanks to Niklas Forsdahl <niklas@creamarketing.com>
+				if (isset($_SERVER['HTTPS'])) {
+					header('Cache-Control: private');
+					header('Pragma: ');
+				}
+				header('Content-disposition: attachment; filename=' . $name);
 				header('Content-type: application/pdf'); //octet-stream');
-				header('Content-Length: '.$size);
+				header('Content-Length: ' . $size);
 				readfile($out);
 			} else {
 				echo "Invalid file";
@@ -110,13 +115,13 @@ class PDFRenditionService
 	}
 
 	protected function tidyHtml($input, $output) {
-		$tidy_config    =    array(
-			'clean'                            =>    true,
-			'quote-nbsp'					=> false,
-			'drop-proprietary-attributes'    =>    true,
-			'output-xhtml'                    =>    true,
-			'word-2000'                        =>    true,
-			'wrap'                            =>    '0'
+		$tidy_config = array(
+			'clean' => true,
+			'quote-nbsp' => false,
+			'drop-proprietary-attributes' => true,
+			'output-xhtml' => true,
+			'word-2000' => true,
+			'wrap' => '0'
 		);
 
 		$tidy = new tidy;
@@ -132,32 +137,32 @@ class PDFRenditionService
 
 		$escapefn = 'escapeshellarg';
 
-		$cmd = "$tidy -utf8 -asxhtml -output ".$escapefn($output).' '.$escapefn($input);
+		$cmd = "$tidy -utf8 -asxhtml -output " . $escapefn($output) . ' ' . $escapefn($input);
 
 		// first we need to tidy the content
 		exec($cmd, $out, $return);
 
 		if (filesize($output) <= 0) {
-			throw new Exception("Invalid Tidy output from command $cmd: ".print_r($out, true)."\n".print_r($return, true));
+			throw new Exception("Invalid Tidy output from command $cmd: " . print_r($out, true) . "\n" . print_r($return, true));
 		}
 	}
-	
+
 	/**
 	 * Fixes URLs in images, link and a tags to refer to correct things relevant to the base tag. 
 	 *
 	 * @param String $contentFile
-	 *				The name of the file to fix links within
+	 * 				The name of the file to fix links within
 	 */
 	protected function fixLinks($content) {
 		$value = new SS_HTMLValue($content);
-		
+
 		$base = $value->getElementsByTagName('base');
 		if ($base && $base->item(0)) {
 			$base = $base->item(0)->getAttribute('href');
-			$check = array('a' => 'href', 'link'=>'href', 'img'=>'src');
+			$check = array('a' => 'href', 'link' => 'href', 'img' => 'src');
 			foreach ($check as $tag => $attr) {
-				if($items = $value->getElementsByTagName($tag)) {
-					foreach($items as $item) {
+				if ($items = $value->getElementsByTagName($tag)) {
+					foreach ($items as $item) {
 						$href = $item->getAttribute($attr);
 						if ($href && $href{0} != '/' && strpos($href, '://') === false) {
 							$item->setAttribute($attr, $base . $href);
@@ -174,7 +179,7 @@ class PDFRenditionService
 	 * Renders the contents of a silverstripe URL into a PDF
 	 *
 	 * @param String $url
-	 *			A relative URL that silverstripe can execute
+	 * 			A relative URL that silverstripe can execute
 	 * @param String $outputTo
 	 */
 	public function renderUrl($url, $outputTo = null, $outname='') {
@@ -183,29 +188,29 @@ class PDFRenditionService
 			$url = Director::makeRelative($url);
 		}
 		// convert the URL to content
-
 		// do a 'test' request, making sure to keep the current session active
 		$response = Director::test($url, null, new Session($_SESSION));
 		if ($response->getStatusCode() == 200) {
 			return $this->render($response->getBody(), $outputTo, $outname);
 		} else {
-			throw new Exception("Failed rendering URL $url: ".$response->getStatusCode()." - ".$response->getStatusDescription());
+			throw new Exception("Failed rendering URL $url: " . $response->getStatusCode() . " - " . $response->getStatusDescription());
 		}
 	}
 
 	/**
 	 *
 	 * @param SiteTree $page
-	 *				The page that should be rendered
+	 * 				The page that should be rendered
 	 * @param String $action
-	 *				An action for the page to render
+	 * 				An action for the page to render
 	 * @param String $outputTo
-	 *				'file' or 'browser'
+	 * 				'file' or 'browser'
 	 * @return String
-	 *				The filename of the output file
+	 * 				The filename of the output file
 	 */
 	public function renderPage($page, $action='', $outputTo = null, $outname='') {
 		$link = Director::makeRelative($page->Link($action));
 		return $this->renderUrl($link, $outputTo, $outname);
 	}
+
 }

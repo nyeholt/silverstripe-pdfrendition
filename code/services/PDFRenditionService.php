@@ -86,7 +86,7 @@ class PDFRenditionService {
 		unlink($in);
 		unlink($mid);
 
-		if (!$outputTo == 'browser') {
+		if (!($outputTo == 'browser')) {
 			return $out;
 		}
 

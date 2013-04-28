@@ -1,11 +1,12 @@
 <?php
 
 /**
- * A class that handles the rendition of pages into PDFs
+ *	A class that handles the rendition of pages into PDFs.
  *
- * @author Marcus Nyeholt <marcus@silverstripe.com.au>
- * @license http://silverstripe.org/bsd-license/
+ *	@authors Marcus Nyeholt <marcus@silverstripe.com.au> and Nathan Glasl <nathan@silverstripe.com.au>
+ *	@license http://silverstripe.org/bsd-license/
  */
+
 class PDFRenditionService {
 
 	public static $tidy_bin = "/usr/bin/tidy";
@@ -47,14 +48,16 @@ class PDFRenditionService {
 		}
 
 		$in = tempnam($pdfFolder, "html_");
+		chmod($in, 0664);
 
 		$content = $this->fixLinks($content);
-
 		$content = str_replace('&nbsp;', '&#160;', $content);
+		$content = http::absoluteURLs($content);
 
 		file_put_contents($in, $content);
 
 		$mid = tempnam($pdfFolder, "xhtml_");
+		chmod($mid, 0664);
 
 		$out = tempnam($pdfFolder, "pdf_") . '.pdf';
 

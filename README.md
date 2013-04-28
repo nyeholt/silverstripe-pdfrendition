@@ -3,6 +3,7 @@
 ## Maintainer Contact
 
 * Marcus Nyeholt marcus(at)silverstripe.com.au
+* Nathan Glasl nathan(at)silverstripe.com.au
 
 ## Requirements
 

@@ -47,14 +47,16 @@ class PDFRenditionService {
 		}
 
 		$in = tempnam($pdfFolder, "html_");
+		chmod($in, 0666);
 
 		$content = $this->fixLinks($content);
-
 		$content = str_replace('&nbsp;', '&#160;', $content);
+		$content = http::absoluteURLs($content);
 
 		file_put_contents($in, $content);
 
 		$mid = tempnam($pdfFolder, "xhtml_");
+		chmod($mid, 0666);
 
 		$out = tempnam($pdfFolder, "pdf_") . '.pdf';
 

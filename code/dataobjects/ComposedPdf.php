@@ -38,7 +38,7 @@ class ComposedPdf extends DataObject {
 		$fields = parent::getCMSFields();
 		
 		if ($this->ID) {
-			$fields->addFieldToTab('Root.Main', new LiteralField('PreviewLink', '<a href="admin/pdfs/previewpdf?ID=' . $this->ID.'" target="_blank">Preview</a>'), 'Description');
+			$fields->addFieldToTab('Root.Main', new LiteralField('PreviewLink', '<a href="admin/pdfs/' . $this->ClassName . '/previewpdf?ID=' . $this->ID.'" target="_blank">Preview</a>'), 'Description');
 		}
 		
 		$fields->addFieldToTab('Root.Main', new CheckboxField('TableOfContents', _t('ComposedPdf.TOC', 'Table of contents?')), 'Description');
@@ -115,7 +115,7 @@ class ComposedPdf extends DataObject {
 	
 	protected function getStorageFolder() {
 		$id = $this->ID;
-		$folderName = 'composed-pdfs/'.$this->ID;
+		$folderName = 'composed-pdfs/'.$id;
 		return Folder::findOrMake($folderName);
 	}
 		

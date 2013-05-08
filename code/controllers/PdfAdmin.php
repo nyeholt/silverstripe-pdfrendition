@@ -7,7 +7,6 @@
  * @license BSD http://silverstripe.org/BSD-license
  */
 class PdfAdmin extends ModelAdmin {
-	public static $url_rule = '/$Action';
 	public static $url_segment = 'pdfs';
 	public static $menu_title = 'PDFs';
 	public static $managed_models = array(
@@ -30,7 +29,7 @@ class PdfAdmin extends ModelAdmin {
 		if(Director::is_ajax()) {
 			return $this->edit($request);
 		} else {
-			Director::redirectBack();
+			$this->redirectBack();
 		}
 	}
 

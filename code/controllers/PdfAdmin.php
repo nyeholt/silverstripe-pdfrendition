@@ -29,7 +29,7 @@ class PdfAdmin extends ModelAdmin {
 		if(Director::is_ajax()) {
 			return $this->edit($request);
 		} else {
-			$this->redirectBack();
+			Controller::curr()->redirectBack();
 		}
 	}
 
@@ -51,7 +51,7 @@ class PdfAdmin extends ModelAdmin {
 	public function previewpdf() {
 		$id = $this->request->getVar('ID');
 		if ($id) {
-			$pdf = DataObject::get_by_id('ComposedPdf', $id);
+			$pdf = ComposedPdf::get_by_id('ComposedPdf', $id);
 			if ($pdf->canView()) {
 				return $pdf->renderPdf();
 			}

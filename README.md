@@ -2,12 +2,12 @@
 
 ## Maintainer Contact
 
-* Marcus Nyeholt marcus(at)silverstripe.com.au
-* Nathan Glasl nathan(at)silverstripe.com.au
+* Marcus Nyeholt marcus@silverstripe.com.au
+* Nathan Glasl nathan@silverstripe.com.au
 
 ## Requirements
 
-* SilverStripe 2.4.X
+* SilverStripe 3.0.X
 * Tidy (preferably the built in PHP tidy module, otherwise the commandline
 binary)
 * Java >= 1.5 installed on the SilverStripe server

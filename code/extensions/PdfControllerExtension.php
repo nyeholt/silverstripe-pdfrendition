@@ -1,10 +1,12 @@
 <?php
+
 /**
- * Action for converting a page to a pdf
+ *	Action for converting a page to a pdf.
  *
- * @author marcus@silverstripe.com.au
- * @license http://silverstripe.org/bsd-license/
+ *	@author marcus@silverstripe.com.au
+ *	@license http://silverstripe.org/bsd-license/
  */
+
 class PdfControllerExtension extends Extension {
     static $allowed_actions = array(
 		'topdf',

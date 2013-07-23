@@ -1,11 +1,12 @@
 <?php
 
 /**
- * Description of ComposedPdf
+ *	Description of ComposedPdf
  *
- * @author Marcus Nyeholt <marcus@silverstripe.com.au>
- * @license BSD http://silverstripe.org/BSD-license
+ *	@authors Marcus Nyeholt <marcus@silverstripe.com.au> and Nathan Glasl <nathan@silverstripe.com.au>
+ *	@license BSD http://silverstripe.org/BSD-license
  */
+
 class ComposedPdf extends DataObject {
 
 	public static $db = array(
@@ -38,7 +39,20 @@ class ComposedPdf extends DataObject {
 		$fields = parent::getCMSFields();
 		
 		if ($this->ID) {
-			$fields->addFieldToTab('Root.Main', new LiteralField('PreviewLink', '<a href="admin/pdfs/' . $this->ClassName . '/previewpdf?ID=' . $this->ID.'" target="_blank">Preview</a>'), 'Description');
+
+			// If a pdf composition has completed, alert the user of the success.
+
+			Requirements::css('pdfrendition/css/cms-custom.css');
+
+			if(Session::get('PdfComposed')) {
+				$fields->addFieldToTab('Root.Main', new LiteralField('ComposeMessage', '<div class="pdfresult message good">This pdf has successfully been composed.</div>'), 'Title');
+				Session::set('PdfComposed', false);
+			}
+
+			// Add buttons to preview/compose the current pdf.
+
+			$fields->addFieldToTab('Root.Main', new LiteralField('PreviewLink', '<div class="field"><a href="admin/pdfs/' . $this->ClassName . '/previewpdf?ID=' . $this->ID.'" target="_blank" class="pdfaction action action ss-ui-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">Preview</a>'), 'Title');
+			$fields->addFieldToTab('Root.Main', new LiteralField('ComposeLink', '<div><a href="admin/pdfs/' . $this->ClassName . '/compose?ID=' . $this->ID.'" class="pdfaction action action ss-ui-action-constructive ss-ui-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-state-hover">Compose</a></div></div>'), 'Title');
 		}
 		
 		$fields->addFieldToTab('Root.Main', new CheckboxField('TableOfContents', _t('ComposedPdf.TOC', 'Table of contents?')), 'Description');
@@ -78,8 +92,8 @@ class ComposedPdf extends DataObject {
 	
 	public function createPdf() {
 		$storeIn = $this->getStorageFolder();
-		$name = ereg_replace(' +','-',trim($this->Title));
-		$name = ereg_replace('[^A-Za-z0-9.+_\-]','',$name);
+		$name = preg_replace('# +#','-',trim($this->Title));
+		$name = preg_replace('#[^A-Za-z0-9.+_\-]#','',$name);
 		$name = $name . '.pdf';
 		
 		if (!$name) {
@@ -87,7 +101,7 @@ class ComposedPdf extends DataObject {
 		}
 		
 		if (!$this->Template) {
-			throw new Exception("Please specify a template before rendering");
+			throw new Exception("Please specify a template before rendering.");
 		}
 
 		$file = new ComposedPdfFile;
@@ -107,6 +121,11 @@ class ComposedPdf extends DataObject {
 
 	public function renderPdf() {
 		Requirements::clear();
+
+		if (!$this->Template) {
+			throw new Exception("Please specify a template before rendering.");
+		}
+
 		$content = $this->renderWith($this->Template);
 		Requirements::restore();
 		
@@ -116,7 +135,7 @@ class ComposedPdf extends DataObject {
 	protected function getStorageFolder() {
 		$id = $this->ID;
 		$folderName = 'composed-pdfs/'.$id;
-		return Folder::findOrMake($folderName);
+		return Folder::find_or_make($folderName);
 	}
 		
 

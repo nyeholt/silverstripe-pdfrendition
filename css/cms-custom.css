@@ -1,0 +1,11 @@
+/* Custom styling for buttons and such through the CMS. */
+
+div.pdfresult.message.good {
+	width: 400px;
+	clear: none;
+}
+
+div.field a.pdfaction {
+	width: 100px;
+	margin: 2px;
+}

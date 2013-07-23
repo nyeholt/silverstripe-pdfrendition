@@ -1,11 +1,12 @@
 <?php
 
 /**
- * A class that handles the rendition of pages into PDFs
+ *	A class that handles the rendition of pages into PDFs.
  *
- * @author Marcus Nyeholt <marcus@silverstripe.com.au>
- * @license http://silverstripe.org/bsd-license/
+ *	@authors Marcus Nyeholt <marcus@silverstripe.com.au> and Nathan Glasl <nathan@silverstripe.com.au>
+ *	@license http://silverstripe.org/bsd-license/
  */
+
 class PDFRenditionService {
 
 	public static $tidy_bin = "/usr/bin/tidy";

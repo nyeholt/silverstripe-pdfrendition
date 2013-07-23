@@ -1,11 +1,12 @@
 <?php
 
 /**
- * Admin controller for creating and managing composed PDFs
+ *	Admin controller for creating and managing composed PDFs.
  *
- * @author Marcus Nyeholt <marcus@silverstripe.com.au>
- * @license BSD http://silverstripe.org/BSD-license
+ *	@authors Marcus Nyeholt <marcus@silverstripe.com.au> and Nathan Glasl <nathan@silverstripe.com.au>
+ *	@license BSD http://silverstripe.org/BSD-license
  */
+
 class PdfAdmin extends ModelAdmin {
 	public static $url_segment = 'pdfs';
 	public static $menu_title = 'PDFs';
@@ -17,43 +18,43 @@ class PdfAdmin extends ModelAdmin {
 		parent::init();
 		Requirements::javascript('pdfrendition/javascript/pdfrendition.js');
 	}
-
-	public function compose($data, Form $form, $request) {
-		$record = $this->getCurrentRecord();
-		if ($record) {
-			// lets generate the pdf with the give template
-			$record->createPdf();
-		}
-
-		// Behaviour switched on ajax.
-		if(Director::is_ajax()) {
-			return $this->edit($request);
-		} else {
-			Controller::curr()->redirectBack();
-		}
-	}
-
-	public function preview() {
-		$record = $this->getCurrentRecord();
-		if ($record && $record->Template) {
-			// lets generate the pdf with the give template
-			echo $record->renderWith($record->Template);
-		} else {
-			echo "No template found";
-		}
-	}
 	
 	/**
-	 * Preview the pdf file
+	 *	Preview the pdf file.
 	 *
-	 * @return String 
+	 *	@return String
 	 */
+
 	public function previewpdf() {
 		$id = $this->request->getVar('ID');
 		if ($id) {
 			$pdf = ComposedPdf::get_by_id('ComposedPdf', $id);
 			if ($pdf->canView()) {
 				return $pdf->renderPdf();
+			}
+			else {
+				throw new Exception("You don't have permission to do this.");
+			}
+		}
+	}
+
+	/**
+	 *	Compose the pdf file.
+	 *
+	 *	@return String
+	 */
+
+	public function compose() {
+		$id = $this->request->getVar('ID');
+		if ($id) {
+			$pdf = ComposedPdf::get_by_id('ComposedPdf', $id);
+			if ($pdf->canView()) {
+				$pdf->createPdf();
+				Session::set('PdfComposed', true);
+				$this->redirectBack();
+			}
+			else {
+				throw new Exception("You don't have permission to do this.");
 			}
 		}
 	}

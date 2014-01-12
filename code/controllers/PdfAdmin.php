@@ -28,7 +28,7 @@ class PdfAdmin extends ModelAdmin {
 	public function previewpdf() {
 		$id = $this->request->getVar('ID');
 		if ($id) {
-			$pdf = ComposedPdf::get_by_id('ComposedPdf', $id);
+			$pdf = ComposedPdf::get()->byID($id);
 			if ($pdf->canView()) {
 				return $pdf->renderPdf();
 			}
@@ -47,7 +47,7 @@ class PdfAdmin extends ModelAdmin {
 	public function compose() {
 		$id = $this->request->getVar('ID');
 		if ($id) {
-			$pdf = ComposedPdf::get_by_id('ComposedPdf', $id);
+			$pdf = ComposedPdf::get()->byID($id);
 			if ($pdf->canView()) {
 				$pdf->createPdf();
 				Session::set('PdfComposed', true);

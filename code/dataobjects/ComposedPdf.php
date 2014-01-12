@@ -92,9 +92,9 @@ class ComposedPdf extends DataObject {
 	
 	public function createPdf() {
 		$storeIn = $this->getStorageFolder();
-		$name = preg_replace('# +#','-',trim($this->Title));
+		$name = FileNameFilter::create()->filter($this->Title);
 		$name = preg_replace('#[^A-Za-z0-9.+_\-]#','',$name);
-		$name = $name . '.pdf';
+		$name .= '.pdf';
 		
 		if (!$name) {
 			throw new Exception("Must have a name!"); 

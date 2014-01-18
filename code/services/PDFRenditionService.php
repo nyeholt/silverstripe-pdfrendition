@@ -157,7 +157,7 @@ class PDFRenditionService {
 	 * 				The name of the file to fix links within
 	 */
 	protected function fixLinks($content) {
-		$value = new SS_HTMLValue($content);
+		$value = SS_HTML4Value::create($content);
 
 		$base = $value->getElementsByTagName('base');
 		if ($base && $base->item(0)) {

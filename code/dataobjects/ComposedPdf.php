@@ -9,28 +9,28 @@
 
 class ComposedPdf extends DataObject {
 
-	public static $db = array(
+	private static $db = array(
 		'Title'					=> 'Varchar(125)',
-		'Description'			=> 'HTMLText',
 		'TableOfContents'		=> 'Boolean',
+		'Description'			=> 'HTMLText',
 		'Template'				=> 'Varchar',
 	);
-	public static $defaults = array(
+	
+	private static $defaults = array(
 		
 	);
 	
-	public static $has_one = array(
+	private static $has_one = array(
 		'Page'					=> 'Page',
 	);
 
-	public static $has_many = array(
+	private static $has_many = array(
 		'Pdfs'					=> 'ComposedPdfFile',
 	);
 	
 	public function onBeforeWrite() {
 		parent::onBeforeWrite();
 		if ($this->ID && !$this->Title) {
-			
 			throw new Exception("Invalid title");
 		}
 	}
@@ -51,35 +51,17 @@ class ComposedPdf extends DataObject {
 
 			// Add buttons to preview/compose the current pdf.
 
-			$fields->addFieldToTab('Root.Main', new LiteralField('PreviewLink', '<div class="field"><a href="admin/pdfs/' . $this->ClassName . '/previewpdf?ID=' . $this->ID.'" target="_blank" class="pdfaction action action ss-ui-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">Preview</a>'), 'Title');
-			$fields->addFieldToTab('Root.Main', new LiteralField('ComposeLink', '<div><a href="admin/pdfs/' . $this->ClassName . '/compose?ID=' . $this->ID.'" class="pdfaction action action ss-ui-action-constructive ss-ui-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-state-hover">Compose</a></div></div>'), 'Title');
+//			$fields->addFieldToTab('Root.Main', new LiteralField('PreviewLink', '<div class="field"><a href="admin/pdfs/' . $this->ClassName . '/previewpdf?ID=' . $this->ID.'" target="_blank" class="pdfaction action action ss-ui-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">Preview</a>'), 'Title');
+//			$fields->addFieldToTab('Root.Main', new LiteralField('ComposeLink', '<div><a href="admin/pdfs/' . $this->ClassName . '/compose?ID=' . $this->ID.'" class="pdfaction action action ss-ui-action-constructive ss-ui-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-state-hover">Compose</a></div></div>'), 'Title');
+			
+			$pdfs = $fields->fieldByName('Pdfs');
+		
+		} else {
+			$fields->removeByName('Pdfs');
 		}
 		
-		$fields->addFieldToTab('Root.Main', new CheckboxField('TableOfContents', _t('ComposedPdf.TOC', 'Table of contents?')), 'Description');
-		$fields->addFieldToTab('Root.Main', new DropdownField('Template', _t('ComposedPdf.TEMPLATE', 'Template'), $this->templateSource()), 'Description');
 		$fields->addFieldToTab('Root.Main', new TreeDropdownField('PageID', _t('ComposedPdf.ROOT_PAGE', 'Root Page'), 'Page'), 'Description');
-		
-		$pdfs = new TableListField(
-			'Pdfs',
-			'ComposedPdfFile',
-			array(
-					'Title'                                 => 'Title',
-					'Created'                               => 'Generated',
-					'ID'                                    => 'Links'
-			),
-			'"SourceID" = '.((int) $this->ID),
-			'"Created" DESC'
-		);
-
-		$pdfs->setShowPagination(true);
-
-		$links = '<a class=\'pdfDownloadLink\' target=\'blank\' href=\'".$Link()."\'>Download</a> ';
-
-		$pdfs->setFieldFormatting(array(
-				'ID' => $links,
-		));
-		
-		$fields->addFieldToTab('Root.Pdfs', $pdfs);
+		$fields->addFieldToTab('Root.Main', new DropdownField('Template', _t('ComposedPdf.TEMPLATE', 'Template'), $this->templateSource()), 'Description');
 
 		return $fields;
 	}
@@ -115,6 +97,7 @@ class ComposedPdf extends DataObject {
 		
 		if (file_exists($filename)) {
 			copy($filename, $file->getFullPath());
+			unlink($filename);
 		}
 	}
 

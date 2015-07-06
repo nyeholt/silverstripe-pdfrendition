@@ -70,7 +70,9 @@ class PDFRenditionService {
 
 		// then run it through our pdfing thing
 		$jarPath = dirname(dirname(dirname(__FILE__))) . '/thirdparty/xhtmlrenderer';
-		$classpath = $jarPath . '/core-renderer.jar' . PATH_SEPARATOR . $jarPath . '/iText-2.0.8.jar';
+		$classpath =	$jarPath . '/flying-saucer-core-9.0.7.jar' . PATH_SEPARATOR . 
+						$jarPath . '/flying-saucer-pdf-9.0.7.jar' . PATH_SEPARATOR .
+						$jarPath . '/itext-4.2.1.jar';
 
 		$cmd = self::$java_bin;
 		if (!is_executable($cmd)) {

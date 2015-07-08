@@ -122,6 +122,9 @@ class PDFRenditionService {
 	protected function tidyHtml($input, $output) {
 		$tidy_config = array(
 			'clean' => true,
+			'new-blocklevel-tags' => 'article aside audio details figcaption figure footer header hgroup nav section source summary temp track video',
+			'new-empty-tags' => 'command embed keygen source track wbr',
+			'new-inline-tags' => 'audio canvas command datalist embed keygen mark meter output progress time video wbr',
 			'quote-nbsp' => false,
 			'drop-proprietary-attributes' => true,
 			'output-xhtml' => true,

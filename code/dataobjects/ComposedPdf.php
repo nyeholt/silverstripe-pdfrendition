@@ -147,7 +147,7 @@ class ComposedPdf extends DataObject {
 	 * @return array
 	 */
 	public function templateSource() {
-		$paths = self::$this->templatePaths();
+		$paths = self::templatePaths();
 		$templates = array("" => _t('ComposedPdf.NONE', 'None'));
 
 		if (isset($paths) && count($paths)) {

@@ -14,7 +14,7 @@ class PdfControllerExtension extends Extension {
 
 	/**
 	 * Return a link to generate the current content item as a PDF
-	 * 
+	 *
 	 * @return string
 	 */
 	public function PdfLink() {

@@ -90,7 +90,7 @@ class ComposedPdfGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
 				throw new Exception("You don't have permission to do this.");
 			}
 		}
-		
+
 		return $this->edit(Controller::curr()->getRequest());
 	}
 

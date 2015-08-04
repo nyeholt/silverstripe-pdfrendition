@@ -15,11 +15,11 @@ class ComposedPdf extends DataObject {
 		'Description'			=> 'HTMLText',
 		'Template'				=> 'Varchar',
 	);
-	
+
 	private static $defaults = array(
-		
+
 	);
-	
+
 	private static $has_one = array(
 		'Page'					=> 'Page',
 	);
@@ -27,17 +27,17 @@ class ComposedPdf extends DataObject {
 	private static $has_many = array(
 		'Pdfs'					=> 'ComposedPdfFile',
 	);
-	
+
 	public function onBeforeWrite() {
 		parent::onBeforeWrite();
 		if ($this->ID && !$this->Title) {
 			throw new Exception("Invalid title");
 		}
 	}
-	
+
 	public function getCMSFields() {
 		$fields = parent::getCMSFields();
-		
+
 		if ($this->ID) {
 
 			// If a pdf composition has completed, alert the user of the success.
@@ -53,34 +53,34 @@ class ComposedPdf extends DataObject {
 
 //			$fields->addFieldToTab('Root.Main', new LiteralField('PreviewLink', '<div class="field"><a href="admin/pdfs/' . $this->ClassName . '/previewpdf?ID=' . $this->ID.'" target="_blank" class="pdfaction action action ss-ui-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">Preview</a>'), 'Title');
 //			$fields->addFieldToTab('Root.Main', new LiteralField('ComposeLink', '<div><a href="admin/pdfs/' . $this->ClassName . '/compose?ID=' . $this->ID.'" class="pdfaction action action ss-ui-action-constructive ss-ui-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-state-hover">Compose</a></div></div>'), 'Title');
-			
+
 			$pdfs = $fields->fieldByName('Pdfs');
-		
+
 		} else {
 			$fields->removeByName('Pdfs');
 		}
-		
+
 		$fields->addFieldToTab('Root.Main', new TreeDropdownField('PageID', _t('ComposedPdf.ROOT_PAGE', 'Root Page'), 'Page'), 'Description');
 		$fields->addFieldToTab('Root.Main', new DropdownField('Template', _t('ComposedPdf.TEMPLATE', 'Template'), $this->templateSource()), 'Description');
 
 		return $fields;
 	}
-	
+
 	public function getCMSActions() {
 		$actions = parent::getCMSActions();
 		$actions->push(new FormAction('compose', _t('ComposedPdf.COMPOSE', 'Compose')));
 		return $actions;
 	}
-	
+
 	public function createPdf() {
 		$storeIn = $this->getStorageFolder();
 		$name = FileNameFilter::create()->filter($this->Title);
 		$name .= '.pdf';
-		
+
 		if (!$name) {
-			throw new Exception("Must have a name!"); 
+			throw new Exception("Must have a name!");
 		}
-		
+
 		if (!$this->Template) {
 			throw new Exception("Please specify a template before rendering.");
 		}
@@ -94,7 +94,7 @@ class ComposedPdf extends DataObject {
 
 		$content = $this->renderPdf();
 		$filename = singleton('PdfRenditionService')->render($content);
-		
+
 		if (file_exists($filename)) {
 			copy($filename, $file->getFullPath());
 			unlink($filename);
@@ -110,19 +110,19 @@ class ComposedPdf extends DataObject {
 
 		$content = $this->renderWith($this->Template);
 		Requirements::restore();
-		
+
 		return $content;
 	}
-	
+
 	protected function getStorageFolder() {
 		$id = $this->ID;
 		$folderName = 'composed-pdfs/'.$id;
 		return Folder::find_or_make($folderName);
 	}
-		
+
 
 	public static $template_paths = array();
-	
+
 	public function templatePaths() {
 		if (!count(self::$template_paths)) {
 			if (file_exists(Director::baseFolder() . DIRECTORY_SEPARATOR . THEMES_DIR . "/" . SSViewer::current_theme() . "/templates/pdfs")) {
@@ -132,7 +132,7 @@ class ComposedPdf extends DataObject {
 			if (file_exists(Director::baseFolder() . DIRECTORY_SEPARATOR . project() . '/templates/pdfs')) {
 				self::$template_paths[] = project() . '/templates/pdfs';
 			}
-			
+
 			if (file_exists(Director::baseFolder() . DIRECTORY_SEPARATOR . 'pdfrendition/templates/pdfs')) {
 				self::$template_paths[] = 'pdfrendition/templates/pdfs';
 			}

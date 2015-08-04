@@ -13,7 +13,7 @@ class PDFRenditionService {
 	public static $java_bin = "/usr/bin/java";
 
 	public function __construct() {
-		
+
 	}
 
 	/**
@@ -70,7 +70,7 @@ class PDFRenditionService {
 
 		// then run it through our pdfing thing
 		$jarPath = dirname(dirname(dirname(__FILE__))) . '/thirdparty/xhtmlrenderer';
-		$classpath =	$jarPath . '/flying-saucer-core-9.0.7.jar' . PATH_SEPARATOR . 
+		$classpath =	$jarPath . '/flying-saucer-core-9.0.7.jar' . PATH_SEPARATOR .
 						$jarPath . '/flying-saucer-pdf-9.0.7.jar' . PATH_SEPARATOR .
 						$jarPath . '/itext-4.2.1.jar';
 
@@ -156,7 +156,7 @@ class PDFRenditionService {
 	}
 
 	/**
-	 * Fixes URLs in images, link and a tags to refer to correct things relevant to the base tag. 
+	 * Fixes URLs in images, link and a tags to refer to correct things relevant to the base tag.
 	 *
 	 * @param String $contentFile
 	 * 				The name of the file to fix links within

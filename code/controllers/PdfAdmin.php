@@ -59,7 +59,7 @@ class ComposedPdfGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
 	/**
 	 * 	Preview the pdf file.
 	 *
-	 * 	@return String
+	 * 	@return string
 	 */
 	public function previewpdf() {
 		$id = $this->record->ID;
@@ -76,7 +76,7 @@ class ComposedPdfGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
 	/**
 	 * 	Compose the pdf file.
 	 *
-	 * 	@return String
+	 * 	@return string
 	 */
 	public function compose() {
 		$id = $this->record->ID;

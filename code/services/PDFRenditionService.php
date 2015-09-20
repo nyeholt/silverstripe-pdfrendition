@@ -22,13 +22,13 @@ class PDFRenditionService {
 	 * If $outputTo == '', then the temporary filename is returned, with the expectation
 	 * that the caller will correctly handle the streaming of the content.
 	 *
-	 * @param String $content
+	 * @param string $content
 	 * 			Raw content to render into a pdf
-	 * @param String $outputTo
+	 * @param string $outputTo
 	 * 				'file' or 'browser'
-	 * @param String $outname
+	 * @param string $outname
 	 * 				A filename if the pdf is sent direct to the browser
-	 * @return String
+	 * @return string
 	 * 				The filename of the output file
 	 */
 	public function render($content, $outputTo = null, $outname='') {
@@ -158,7 +158,7 @@ class PDFRenditionService {
 	/**
 	 * Fixes URLs in images, link and a tags to refer to correct things relevant to the base tag.
 	 *
-	 * @param String $contentFile
+	 * @param string $contentFile
 	 * 				The name of the file to fix links within
 	 */
 	protected function fixLinks($content) {
@@ -186,9 +186,9 @@ class PDFRenditionService {
 	/**
 	 * Renders the contents of a silverstripe URL into a PDF
 	 *
-	 * @param String $url
+	 * @param string $url
 	 * 			A relative URL that silverstripe can execute
-	 * @param String $outputTo
+	 * @param string $outputTo
 	 */
 	public function renderUrl($url, $outputTo = null, $outname='') {
 		if (strpos($url, '/') === 0) {
@@ -209,11 +209,11 @@ class PDFRenditionService {
 	 *
 	 * @param SiteTree $page
 	 * 				The page that should be rendered
-	 * @param String $action
+	 * @param string $action
 	 * 				An action for the page to render
-	 * @param String $outputTo
+	 * @param string $outputTo
 	 * 				'file' or 'browser'
-	 * @return String
+	 * @return string
 	 * 				The filename of the output file
 	 */
 	public function renderPage($page, $action='', $outputTo = null, $outname='') {

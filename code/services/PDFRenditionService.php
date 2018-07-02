@@ -197,7 +197,7 @@ class PDFRenditionService {
 		}
 		// convert the URL to content
 		// do a 'test' request, making sure to keep the current session active
-		$response = Director::test($url, null, new Session($_SESSION));
+		$response = Director::test($url, null, isset($_SESSION) ? new Session($_SESSION) : null);
 		if ($response->getStatusCode() == 200) {
 			return $this->render($response->getBody(), $outputTo, $outname);
 		} else {
@@ -217,7 +217,13 @@ class PDFRenditionService {
 	 * 				The filename of the output file
 	 */
 	public function renderPage($page, $action='', $outputTo = null, $outname='') {
-		$link = Director::makeRelative($page->Link($action));
+		// Allow the ability to pass through a customised link.
+		if (Controller::has_curr() && Controller::curr()->getRequest()->getVar('link')) {
+			$link = urldecode(Controller::curr()->getRequest()->getVar('link'));
+		}
+		else {
+			$link = Director::makeRelative($page->Link($action));
+		}
 		return $this->renderUrl($link, $outputTo, $outname);
 	}
 

@@ -1,0 +1,7 @@
+mappings:
+  ComposedPdfFile: Symbiote\PdfRendition\Model\ComposedPdfFile
+  ComposedPdf: Symbiote\PdfRendition\Model\ComposedPdf
+  PdfControllerExtension: Symbiote\PdfRendition\Extension\PdfControllerExtension
+  PdfAdmin: Symbiote\PdfRendition\Control\PdfAdmin
+  ComposedPdfGridFieldDetailForm_ItemRequest: Symbiote\PdfRendition\Control\ComposedPdfGridFieldDetailForm_ItemRequest
+  PDFRenditionService: Symbiote\PdfRendition\Service\PDFRenditionService

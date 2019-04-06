@@ -1,42 +1,16 @@
 <?php
 
-/**
- * 	Admin controller for creating and managing composed PDFs.
- *
- * 	@authors Marcus Nyeholt <marcus@silverstripe.com.au> and Nathan Glasl <nathan@silverstripe.com.au>
- * 	@license BSD http://silverstripe.org/BSD-license
- */
-class PdfAdmin extends ModelAdmin {
+namespace Symbiote\PdfRendition\Control;
 
-	private static $allowed_actions = array('previewpdf');
-	private static $url_segment = 'pdfs';
-	private static $menu_title = 'PDFs';
-	private static $managed_models = array(
-		'ComposedPdf',
-	);
+use Exception;
 
-	public function init() {
-		parent::init();
-		Requirements::javascript('pdfrendition/javascript/pdfrendition.js');
-	}
+use SilverStripe\Control\Controller;
+use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest;
+use Symbiote\PdfRendition\Model\ComposedPdf;
+use SilverStripe\Control\Session;
 
-	public function getEditForm($id = null, $fields = null) {
-		$form = parent::getEditForm($id, $fields);
 
-		$gridClass = $this->modelClass . 'GridFieldDetailForm_ItemRequest';
-
-		if (class_exists($gridClass)) {
-			$grid = $form->Fields()->dataFieldByName($this->modelClass);
-			$editForm = $grid->getConfig()->getComponentByType('GridFieldDetailForm');
-			if ($editForm) {
-				$editForm->setItemRequestClass($gridClass);
-			}
-		}
-
-		return $form;
-	}
-
-}
 
 class ComposedPdfGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_ItemRequest {
 

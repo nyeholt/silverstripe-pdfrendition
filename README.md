@@ -31,7 +31,7 @@ details about specific styling tips
 
 ## Usage Overview
 
-* Add `Object::add_extension('Page_Controller', 'PdfControllerExtension');` to your _config.php
+* Add `Symbiote\PdfRendition\Extension\PdfControllerExtension` as an extension to PageController 
 * Add $PdfLink in your template to insert a link to the PDF version of the page
 * To customise the PDF layout, create a 'pdfrendition.css' file in your theme directory, link to it with your preferred method (@import, requirements, etc.) and add styles specifically for your pdf using the @print media query. See the github wiki for some examples of how to do some common PDF based things.
 

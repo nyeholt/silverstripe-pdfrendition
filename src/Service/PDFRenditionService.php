@@ -3,6 +3,8 @@
 namespace Symbiote\PdfRendition\Service;
 
 use Exception;
+use tidy;
+
 use SilverStripe\Control\HTTP;
 use SilverStripe\View\Parsers\HTML4Value;
 use SilverStripe\Control\Director;
@@ -44,7 +46,7 @@ class PDFRenditionService
      */
     public function render($content, $outputTo = null, $outname = '')
     {
-        $tempFolder = getTempFolder();
+        $tempFolder = TEMP_FOLDER;
         if (!is_dir($tempFolder)) {
             throw new Exception("Could not find TMP directory");
         }
@@ -120,7 +122,7 @@ class PDFRenditionService
                     header('Pragma: ');
                 }
                 header('Content-disposition: attachment; filename=' . $name);
-                header('Content-type: application/pdf'); //octet-stream');
+                header('Content-type: ' . $type);
                 header('Content-Length: ' . $size);
                 readfile($out);
             } else {

@@ -25,7 +25,7 @@
         ]
     },
     "autoload": {
-        "psr4": {
+        "psr-4": {
             "Symbiote\\PdfRendition\\": "src/"
         }
     }

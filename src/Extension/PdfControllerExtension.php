@@ -1,5 +1,11 @@
 <?php
 
+namespace Symbiote\PdfRendition\Extension;
+
+use SilverStripe\Core\Extension;
+use Symbiote\PdfRendition\Service\PDFRenditionService;
+
+
 /**
  *	Action for converting a page to a pdf.
  *
@@ -8,7 +14,7 @@
  */
 
 class PdfControllerExtension extends Extension {
-	static $allowed_actions = array(
+	private static $allowed_actions = array(
 		'topdf',
 	);
 
@@ -25,7 +31,7 @@ class PdfControllerExtension extends Extension {
 	 * Generates a PDF file for the current page
 	 */
 	public function topdf() {
-		singleton('PDFRenditionService')->renderPage($this->owner->data(), '', 'browser');
+		singleton(PDFRenditionService::class)->renderPage($this->owner->data(), '', 'browser');
 		return;
 	}
 }

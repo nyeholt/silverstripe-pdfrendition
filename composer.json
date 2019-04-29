@@ -1,24 +1,32 @@
 {
-	"name": "silverstripe-australia/pdfrendition",
-	"description": "A module that makes use of the Flying Saucer XHTML renderer project to create PDFs from XHTML pages.",
-	"type": "silverstripe-module",
-	"keywords": ["silverstripe", "pdf"],
-	"license": "BSD-3-Clause",
-	"authors": [
-	{
-		"name": "Marcus Nyeholt",
-		"email": "marcus@silverstripe.com.au"
-	}
-	],
-	"require":
-	{
-		"silverstripe/framework": "~3.1"
-	},
-	"extra": {
-		"branch-alias": {
-			"dev-master": "1.2.x-dev"
-		}
-
-	}
-
+    "name": "symbiote/silverstripe-pdfrendition",
+    "description": "A module that makes use of the Flying Saucer XHTML renderer project to create PDFs from XHTML pages.",
+    "type": "silverstripe-vendormodule",
+    "keywords": [
+        "silverstripe",
+        "pdf"
+    ],
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Marcus Nyeholt",
+            "email": "marcus@symbiote.com.au"
+        }
+    ],
+    "require": {
+        "silverstripe/framework": "~4.1"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0.x-dev"
+        },
+        "expose": [
+            "client"
+        ]
+    },
+    "autoload": {
+        "psr-4": {
+            "Symbiote\\PdfRendition\\": "src/"
+        }
+    }
 }

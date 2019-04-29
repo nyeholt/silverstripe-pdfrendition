@@ -16,6 +16,9 @@
     "require": {
         "silverstripe/framework": "~4.1"
     },
+    "replace": {
+        "silverstripe-australia/pdfrendition":"1.*"
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "2.0.x-dev"

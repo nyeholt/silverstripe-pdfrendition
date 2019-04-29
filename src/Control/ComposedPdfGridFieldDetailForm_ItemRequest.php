@@ -57,8 +57,8 @@ class ComposedPdfGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_Ite
 		if ($id) {
 			$pdf = ComposedPdf::get()->byID($id);
 			if ($pdf->canView()) {
-				$pdf->createPdf();
-				Session::set('PdfComposed', true);
+                $pdf->createPdf();
+                Controller::curr()->getRequest()->getSession()->set('PdfComposed', 1);
 //				$this->redirectBack();
 			} else {
 				throw new Exception("You don't have permission to do this.");

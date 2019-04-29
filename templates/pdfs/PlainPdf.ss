@@ -1,7 +1,7 @@
 <html>
 	<head>
 		<% base_tag %>
-		<% require css(pdfrendition/css/pdfrendition.css) %>
+		<% require css(symbiote/silverstripe-pdfrendition: client/css/pdfrendition.css) %>
 	</head>
 	<body>
 		<div id="PrintCoverPage">

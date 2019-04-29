@@ -4,8 +4,7 @@ namespace Symbiote\PdfRendition\Model;
 
 use Symbiote\PdfRendition\Model\ComposedPdf;
 use SilverStripe\Assets\File;
-
-
+use SilverStripe\Forms\LiteralField;
 
 /**
  *	A file generated as the result of a composed pdf being created.
@@ -27,4 +26,15 @@ class ComposedPdfFile extends File
     private static $has_one = array(
         'Source'            => ComposedPdf::class,
     );
+
+    public function getCMSFields()
+    {
+        $fields = parent::getCMSFields();
+
+        if ($this->exists()) {
+            $fields->push(LiteralField::create('pdflink', '<a href="' . $this->Link() . '">Download</a>'));
+        }
+        
+        return $fields;
+    }
 }

@@ -15,13 +15,11 @@ use SilverStripe\Forms\FormAction;
 use SilverStripe\Assets\FileNameFilter;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Control\Director;
-
-
+use SilverStripe\Control\Controller;
+use Symbiote\PdfRendition\Service\PDFRenditionService;
 
 /**
- *	Description of ComposedPdf
- *
- *	@authors Marcus Nyeholt <marcus@silverstripe.com.au> and Nathan Glasl <nathan@silverstripe.com.au>
+ *	@authors Marcus Nyeholt <marcus@symbiote.com.au> and Nathan Glasl <nathan@symbiote.com.au>
  *	@license BSD http://silverstripe.org/BSD-license
  */
 
@@ -63,11 +61,11 @@ class ComposedPdf extends DataObject
 
             // If a pdf composition has completed, alert the user of the success.
 
-            Requirements::css('pdfrendition/css/cms-custom.css');
+            Requirements::css('symbiote/silverstripe-pdfrendition: client/css/cms-custom.css');
 
-            if (Session::get('PdfComposed')) {
+            if (Controller::has_curr() && Controller::curr()->getRequest()->getSession()->get('PdfComposed')) {
                 $fields->addFieldToTab('Root.Main', new LiteralField('ComposeMessage', '<div class="pdfresult message good">This pdf has successfully been composed.</div>'), 'Title');
-                Session::set('PdfComposed', false);
+                Controller::curr()->getRequest()->getSession()->clear('PdfComposed');
             }
 
             // Add buttons to preview/compose the current pdf.
@@ -107,18 +105,20 @@ class ComposedPdf extends DataObject
             throw new Exception("Please specify a template before rendering.");
         }
 
-        $file = new ComposedPdfFile;
+        $file = ComposedPdfFile::create();
         $file->ParentID = $storeIn->ID;
         $file->SourceID = $this->ID;
         $file->Title = $this->Title;
-        $file->setName($name);
+        $file->Name = $name;
         $file->write();
 
         $content = $this->renderPdf();
-        $filename = singleton('PdfRenditionService')->render($content);
+        $filename = singleton(PDFRenditionService::class)->render($content);
 
         if (file_exists($filename)) {
-            copy($filename, $file->getFullPath());
+            $file->setFromLocalFile($filename);
+            $file->Name = $name;
+            $file->write();
             unlink($filename);
         }
     }
@@ -131,7 +131,14 @@ class ComposedPdf extends DataObject
             throw new Exception("Please specify a template before rendering.");
         }
 
-        $content = $this->renderWith($this->Template);
+        $paths = $this->templatePaths();
+
+        $templates = [];
+        foreach ($paths as $p) {
+            $templates[] = $p . '/' . $this->Template . '.ss';
+        }
+
+        $content = $this->renderWith($templates);
         Requirements::restore();
 
         return $content;
@@ -150,16 +157,12 @@ class ComposedPdf extends DataObject
     public function templatePaths()
     {
         if (!count(self::$template_paths)) {
-            // if (file_exists(Director::baseFolder() . DIRECTORY_SEPARATOR . THEMES_DIR . "/" . SSViewer::current_theme() . "/templates/pdfs")) {
-            // 	self::$template_paths[] = THEMES_DIR . "/" . SSViewer::current_theme() . "/templates/pdfs";
-            // }
-
             if (file_exists(Director::baseFolder() . DIRECTORY_SEPARATOR . project() . '/templates/pdfs')) {
                 self::$template_paths[] = project() . '/templates/pdfs';
             }
 
             if (file_exists(Director::baseFolder() . DIRECTORY_SEPARATOR . 'vendor/symbiote/silverstripe-pdfrendition/templates/pdfs')) {
-                self::$template_paths[] = 'pdfrendition/templates/pdfs';
+                self::$template_paths[] = 'vendor/symbiote/silverstripe-pdfrendition/templates/pdfs';
             }
         }
 
@@ -178,9 +181,9 @@ class ComposedPdf extends DataObject
 
         if (isset($paths) && count($paths)) {
             $absPath = Director::baseFolder();
-            if ($absPath{
-            strlen($absPath) - 1} != "/")
+            if ($absPath{strlen($absPath) - 1} != "/") {
                 $absPath .= "/";
+            }
 
             foreach ($paths as $path) {
                 $path = $absPath . $path;

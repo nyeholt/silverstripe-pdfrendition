@@ -27,7 +27,7 @@ details about specific styling tips
 
 ## Installation Instructions
 
-* Extract to your silverstripe folder in /pdfrendition
+`composer require symbiote/silverstripe-pdfrendition:~2.0`
 
 ## Usage Overview
 

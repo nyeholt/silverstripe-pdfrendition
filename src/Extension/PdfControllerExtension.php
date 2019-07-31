@@ -4,7 +4,7 @@ namespace Symbiote\PdfRendition\Extension;
 
 use SilverStripe\Core\Extension;
 use Symbiote\PdfRendition\Service\PDFRenditionService;
-
+use SilverStripe\Control\Controller;
 
 /**
  *	Action for converting a page to a pdf.
@@ -24,7 +24,7 @@ class PdfControllerExtension extends Extension {
 	 * @return string
 	 */
 	public function PdfLink() {
-		return $this->owner->Link('topdf').'/'.$this->owner->data()->URLSegment.'.pdf';
+		return $this->owner->Link(Controller::join_links('topdf', $this->owner->data()->URLSegment.'.pdf'));
 	}
 
 	/**

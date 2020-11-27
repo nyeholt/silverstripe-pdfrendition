@@ -36,15 +36,19 @@ class PDFRenditionService
      * that the caller will correctly handle the streaming of the content.
      *
      * @param string $content
-     * 			Raw content to render into a pdf
+     * 			    Raw content to render into a pdf
      * @param string $outputTo
      * 				'file' or 'browser'
      * @param string $outname
      * 				A filename if the pdf is sent direct to the browser
+     * @param string $disposition
+     * 				How the file is served:
+     *                - 'attachment' to download the pdf
+     *                - 'inline' to view the pdf in the browser
      * @return string
      * 				The filename of the output file
      */
-    public function render($content, $outputTo = null, $outname = '')
+    public function render($content, $outputTo = null, $outname = '', $disposition = 'attachment')
     {
         $tempFolder = TEMP_FOLDER;
         if (!is_dir($tempFolder)) {
@@ -121,7 +125,7 @@ class PDFRenditionService
                     header('Cache-Control: private');
                     header('Pragma: ');
                 }
-                header('Content-disposition: attachment; filename=' . $name);
+                header('Content-disposition: ' . $disposition . '; filename=' . $name);
                 header('Content-type: ' . $type);
                 header('Content-Length: ' . $size);
                 readfile($out);

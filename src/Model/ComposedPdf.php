@@ -181,7 +181,7 @@ class ComposedPdf extends DataObject
 
         if (isset($paths) && count($paths)) {
             $absPath = Director::baseFolder();
-            if ($absPath{strlen($absPath) - 1} != "/") {
+            if ($absPath[strlen($absPath) - 1] != "/") {
                 $absPath .= "/";
             }
 

@@ -193,8 +193,8 @@ class PDFRenditionService
                 if ($items = $value->getElementsByTagName($tag)) {
                     foreach ($items as $item) {
                         $href = $item->getAttribute($attr);
-                        if ($href && $href{
-                            0} != '/' && strpos($href, '://') === false) {
+                        if ($href && $href[
+                            0] != '/' && strpos($href, '://') === false) {
                             $item->setAttribute($attr, $base . $href);
                         }
                     }

@@ -7,7 +7,7 @@
 
 ## Requirements
 
-* SilverStripe 4.1.X
+* SilverStripe 4.12+ || 5+
 * Tidy (preferably the built in PHP tidy module, otherwise the commandline
 binary)
 * Java 1.8 (the latest version this has been tested against)
@@ -22,12 +22,9 @@ a simple extension that adds a simple action for automatically generating
 PDF renditions of a page, and an API for developers to generate more
 specific PDF renditions.
 
-Please see http://github.com/nyeholt/silverstripe-pdfrendition for more
-details about specific styling tips
-
 ## Installation Instructions
 
-`composer require symbiote/silverstripe-pdfrendition:~2.0`
+`composer require symbiote/silverstripe-pdfrendition`
 
 ## Usage Overview
 

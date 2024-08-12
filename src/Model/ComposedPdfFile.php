@@ -17,15 +17,16 @@ class ComposedPdfFile extends File
 {
     private static $table_name = 'ComposedPdfFile';
 
-    private static $summary_fields = array(
-        'Title', 'Created',
-    );
+    private static $has_one = [
+        'Source' => ComposedPdf::class
+    ];
+
+    private static $summary_fields = [
+        'Title',
+        'Created'
+    ];
 
     private static $default_sort = 'Created DESC';
-
-    private static $has_one = array(
-        'Source'            => ComposedPdf::class,
-    );
 
     public function getCMSFields()
     {
@@ -34,7 +35,7 @@ class ComposedPdfFile extends File
         if ($this->exists()) {
             $fields->push(LiteralField::create('pdflink', '<a href="' . $this->Link() . '">Download</a>'));
         }
-        
+
         return $fields;
     }
 }

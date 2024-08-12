@@ -87,7 +87,7 @@ class PDFRenditionService
 
 
         // then run it through our pdfing thing
-        $jarPath = dirname(dirname(dirname(__FILE__))) . '/thirdparty/xhtmlrenderer';
+        $jarPath = dirname(__FILE__, 3) . '/thirdparty/xhtmlrenderer';
         $classpath =    $jarPath . '/flying-saucer-core-9.0.7.jar' . PATH_SEPARATOR .
             $jarPath . '/flying-saucer-pdf-9.0.7.jar' . PATH_SEPARATOR .
             $jarPath . '/itext-4.2.1.jar';
@@ -139,7 +139,7 @@ class PDFRenditionService
 
     protected function tidyHtml($input, $output)
     {
-        $tidy_config = array(
+        $tidy_config = [
             'clean' => true,
             'new-blocklevel-tags' => 'article aside audio details figcaption figure footer header hgroup nav section source summary temp track video',
             'new-empty-tags' => 'command embed keygen source track wbr',
@@ -149,7 +149,7 @@ class PDFRenditionService
             'output-xhtml' => true,
             'word-2000' => true,
             'wrap' => '0'
-        );
+        ];
 
         $tidy = new tidy;
         $out = $tidy->repairFile($input, $tidy_config, 'utf8');
@@ -188,13 +188,17 @@ class PDFRenditionService
         $base = $value->getElementsByTagName('base');
         if ($base && $base->item(0)) {
             $base = $base->item(0)->getAttribute('href');
-            $check = array('a' => 'href', 'link' => 'href', 'img' => 'src');
+            $check = [
+                'a' => 'href',
+                'link' => 'href',
+                'img' => 'src'
+            ];
             foreach ($check as $tag => $attr) {
                 if ($items = $value->getElementsByTagName($tag)) {
                     foreach ($items as $item) {
                         $href = $item->getAttribute($attr);
                         if ($href && $href[
-                            0] != '/' && strpos($href, '://') === false) {
+                            0] != '/' && !str_contains($href, '://')) {
                             $item->setAttribute($attr, $base . $href);
                         }
                     }
@@ -214,7 +218,7 @@ class PDFRenditionService
      */
     public function renderUrl($url, $outputTo = null, $outname = '')
     {
-        if (strpos($url, '/') === 0) {
+        if (str_starts_with($url, '/')) {
             // fix it
             $url = Director::makeRelative($url);
         }
@@ -243,7 +247,7 @@ class PDFRenditionService
     {
         // Allow the ability to pass through a customised link.
         if (Controller::has_curr() && Controller::curr()->getRequest()->getVar('link')) {
-            $link = urldecode(Controller::curr()->getRequest()->getVar('link'));
+            $link = urldecode((string) Controller::curr()->getRequest()->getVar('link'));
         } else {
             $link = Director::makeRelative($page->Link($action));
         }

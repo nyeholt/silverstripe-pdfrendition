@@ -13,24 +13,27 @@ use SilverStripe\Control\Controller;
  *	@license http://silverstripe.org/bsd-license/
  */
 
-class PdfControllerExtension extends Extension {
-	private static $allowed_actions = array(
-		'topdf',
-	);
+class PdfControllerExtension extends Extension
+{
+	private static $allowed_actions = [
+        'topdf'
+    ];
 
 	/**
 	 * Return a link to generate the current content item as a PDF
 	 *
 	 * @return string
 	 */
-	public function PdfLink() {
+	public function PdfLink()
+    {
 		return $this->owner->Link(Controller::join_links('topdf', $this->owner->data()->URLSegment.'.pdf'));
 	}
 
 	/**
 	 * Generates a PDF file for the current page
 	 */
-	public function topdf() {
+	public function topdf()
+    {
 		singleton(PDFRenditionService::class)->renderPage($this->owner->data(), '', 'browser');
 		return;
 	}

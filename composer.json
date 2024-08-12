@@ -14,15 +14,12 @@
         }
     ],
     "require": {
-        "silverstripe/framework": "~4.1"
+        "silverstripe/framework": "^4.12 || ^5"
     },
     "replace": {
-        "silverstripe-australia/pdfrendition":"1.*"
+        "silverstripe-australia/pdfrendition":"self.version"
     },
     "extra": {
-        "branch-alias": {
-            "dev-master": "2.0.x-dev"
-        },
         "expose": [
             "client"
         ]

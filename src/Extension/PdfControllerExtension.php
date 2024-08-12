@@ -2,9 +2,9 @@
 
 namespace Symbiote\PdfRendition\Extension;
 
+use SilverStripe\Control\Controller;
 use SilverStripe\Core\Extension;
 use Symbiote\PdfRendition\Service\PDFRenditionService;
-use SilverStripe\Control\Controller;
 
 /**
  *	Action for converting a page to a pdf.

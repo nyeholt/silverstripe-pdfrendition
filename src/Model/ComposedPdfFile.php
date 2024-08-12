@@ -2,7 +2,6 @@
 
 namespace Symbiote\PdfRendition\Model;
 
-use Symbiote\PdfRendition\Model\ComposedPdf;
 use SilverStripe\Assets\File;
 use SilverStripe\Forms\LiteralField;
 

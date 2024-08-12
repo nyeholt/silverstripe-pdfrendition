@@ -3,19 +3,16 @@
 namespace Symbiote\PdfRendition\Model;
 
 use Exception;
-
-use Symbiote\PdfRendition\Model\ComposedPdfFile;
-use SilverStripe\ORM\DataObject;
-use SilverStripe\View\Requirements;
-use SilverStripe\Control\Session;
-use SilverStripe\Forms\LiteralField;
-use SilverStripe\Forms\TreeDropdownField;
-use SilverStripe\Forms\DropdownField;
-use SilverStripe\Forms\FormAction;
 use SilverStripe\Assets\FileNameFilter;
 use SilverStripe\Assets\Folder;
-use SilverStripe\Control\Director;
 use SilverStripe\Control\Controller;
+use SilverStripe\Control\Director;
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\LiteralField;
+use SilverStripe\Forms\TreeDropdownField;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\View\Requirements;
 use Symbiote\PdfRendition\Service\PDFRenditionService;
 
 /**

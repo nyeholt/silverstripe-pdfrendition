@@ -2,12 +2,10 @@
 
 namespace Symbiote\PdfRendition\Control;
 
-use Symbiote\PdfRendition\Model\ComposedPdf;
 use SilverStripe\Admin\ModelAdmin;
-use SilverStripe\View\Requirements;
-use SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest;
-use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\GridField\GridFieldDetailForm;
+use SilverStripe\View\Requirements;
+use Symbiote\PdfRendition\Model\ComposedPdf;
 
 /**
  * 	Admin controller for creating and managing composed PDFs.

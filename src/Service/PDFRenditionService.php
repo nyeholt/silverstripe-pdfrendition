@@ -3,13 +3,12 @@
 namespace Symbiote\PdfRendition\Service;
 
 use Exception;
-use tidy;
-
-use SilverStripe\Control\HTTP;
-use SilverStripe\View\Parsers\HTML4Value;
-use SilverStripe\Control\Director;
-use SilverStripe\Control\Session;
 use SilverStripe\Control\Controller;
+use SilverStripe\Control\Director;
+use SilverStripe\Control\HTTP;
+use SilverStripe\Control\Session;
+use SilverStripe\View\Parsers\HTMLValue;
+use tidy;
 
 /**
  *	A class that handles the rendition of pages into PDFs.
@@ -183,7 +182,7 @@ class PDFRenditionService
      */
     protected function fixLinks($content)
     {
-        $value = HTML4Value::create($content);
+        $value = HTMLValue::create($content);
 
         $base = $value->getElementsByTagName('base');
         if ($base && $base->item(0)) {

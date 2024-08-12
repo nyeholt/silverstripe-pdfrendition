@@ -22,7 +22,6 @@ use Symbiote\PdfRendition\Service\PDFRenditionService;
 
 class ComposedPdf extends DataObject
 {
-
     private static $table_name = 'ComposedPdf';
 
     private static $db = [
@@ -41,6 +40,8 @@ class ComposedPdf extends DataObject
     private static $has_many = [
         'Pdfs' => ComposedPdfFile::class
     ];
+
+    private static $template_paths = [];
 
     public function onBeforeWrite()
     {
@@ -169,9 +170,6 @@ class ComposedPdf extends DataObject
         $folderName = 'composed-pdfs/' . $id;
         return Folder::find_or_make($folderName);
     }
-
-
-    public static $template_paths = [];
 
     public function templatePaths()
     {

@@ -11,10 +11,10 @@ use SilverStripe\View\Parsers\HTMLValue;
 use tidy;
 
 /**
- *	A class that handles the rendition of pages into PDFs.
+ *  A class that handles the rendition of pages into PDFs.
  *
- *	@authors Marcus Nyeholt <marcus@silverstripe.com.au> and Nathan Glasl <nathan@silverstripe.com.au>
- *	@license http://silverstripe.org/bsd-license/
+ *  @authors Marcus Nyeholt <marcus@silverstripe.com.au> and Nathan Glasl <nathan@silverstripe.com.au>
+ *  @license http://silverstripe.org/bsd-license/
  */
 
 class PDFRenditionService
@@ -34,17 +34,17 @@ class PDFRenditionService
      * that the caller will correctly handle the streaming of the content.
      *
      * @param string $content
-     * 			    Raw content to render into a pdf
+     *              Raw content to render into a pdf
      * @param string $outputTo
-     * 				'file' or 'browser'
+     *              'file' or 'browser'
      * @param string $outname
-     * 				A filename if the pdf is sent direct to the browser
+     *              A filename if the pdf is sent direct to the browser
      * @param string $disposition
-     * 				How the file is served:
+     *              How the file is served:
      *                - 'attachment' to download the pdf
      *                - 'inline' to view the pdf in the browser
      * @return string
-     * 				The filename of the output file
+     *              The filename of the output file
      */
     public function render($content, $outputTo = null, $outname = '', $disposition = 'attachment')
     {
@@ -177,7 +177,7 @@ class PDFRenditionService
      * Fixes URLs in images, link and a tags to refer to correct things relevant to the base tag.
      *
      * @param string $contentFile
-     * 				The name of the file to fix links within
+     *              The name of the file to fix links within
      */
     protected function fixLinks($content)
     {
@@ -211,7 +211,7 @@ class PDFRenditionService
      * Renders the contents of a silverstripe URL into a PDF
      *
      * @param string $url
-     * 			A relative URL that silverstripe can execute
+     *          A relative URL that silverstripe can execute
      * @param string $outputTo
      */
     public function renderUrl($url, $outputTo = null, $outname = '')
@@ -233,13 +233,13 @@ class PDFRenditionService
     /**
      *
      * @param SiteTree $page
-     * 				The page that should be rendered
+     *              The page that should be rendered
      * @param string $action
-     * 				An action for the page to render
+     *              An action for the page to render
      * @param string $outputTo
-     * 				'file' or 'browser'
+     *              'file' or 'browser'
      * @return string
-     * 				The filename of the output file
+     *              The filename of the output file
      */
     public function renderPage($page, $action = '', $outputTo = null, $outname = '')
     {

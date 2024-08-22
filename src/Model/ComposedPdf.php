@@ -16,8 +16,8 @@ use SilverStripe\View\Requirements;
 use Symbiote\PdfRendition\Service\PDFRenditionService;
 
 /**
- *	@authors Marcus Nyeholt <marcus@symbiote.com.au> and Nathan Glasl <nathan@symbiote.com.au>
- *	@license BSD http://silverstripe.org/BSD-license
+ *  @authors Marcus Nyeholt <marcus@symbiote.com.au> and Nathan Glasl <nathan@symbiote.com.au>
+ *  @license BSD http://silverstripe.org/BSD-license
  */
 
 class ComposedPdf extends DataObject
@@ -56,7 +56,6 @@ class ComposedPdf extends DataObject
         $fields = parent::getCMSFields();
 
         if ($this->ID) {
-
             // If a pdf composition has completed, alert the user of the success.
 
             Requirements::css('symbiote/silverstripe-pdfrendition: client/css/cms-custom.css');
@@ -68,14 +67,15 @@ class ComposedPdf extends DataObject
                         'ComposeMessage',
                         '<div class="pdfresult message good">This pdf has successfully been composed.</div>'
                     ),
-                    'Title');
+                    'Title'
+                );
                 Controller::curr()->getRequest()->getSession()->clear('PdfComposed');
             }
 
             // Add buttons to preview/compose the current pdf.
 
-//			$fields->addFieldToTab('Root.Main', new LiteralField('PreviewLink', '<div class="field"><a href="admin/pdfs/' . $this->ClassName . '/previewpdf?ID=' . $this->ID.'" target="_blank" class="pdfaction action action ss-ui-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">Preview</a>'), 'Title');
-//			$fields->addFieldToTab('Root.Main', new LiteralField('ComposeLink', '<div><a href="admin/pdfs/' . $this->ClassName . '/compose?ID=' . $this->ID.'" class="pdfaction action action ss-ui-action-constructive ss-ui-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-state-hover">Compose</a></div></div>'), 'Title');
+//          $fields->addFieldToTab('Root.Main', new LiteralField('PreviewLink', '<div class="field"><a href="admin/pdfs/' . $this->ClassName . '/previewpdf?ID=' . $this->ID.'" target="_blank" class="pdfaction action action ss-ui-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">Preview</a>'), 'Title');
+//          $fields->addFieldToTab('Root.Main', new LiteralField('ComposeLink', '<div><a href="admin/pdfs/' . $this->ClassName . '/compose?ID=' . $this->ID.'" class="pdfaction action action ss-ui-action-constructive ss-ui-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-state-hover">Compose</a></div></div>'), 'Title');
 
             $pdfs = $fields->fieldByName('Pdfs');
         } else {

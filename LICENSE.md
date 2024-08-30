@@ -1,4 +1,5 @@
-Copyright (c) 2010, SilverStripe Australia PTY LTD - www.silverstripe.com.au
+Copyright (c) 2024, Symbiote - www.symbiote.com.au
+
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:

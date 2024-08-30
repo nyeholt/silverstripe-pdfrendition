@@ -1,12 +1,14 @@
-;(function ($) {
-	$().ready(function () {
-		$('#action_previewpdf').live('click', function () {
-			var link = $(this).attr('data-link');
-			window.open(link);
-			return false;
-		});
-		
-//		
+document.addEventListener("click", (event) => {
+    if (event.target.closest("#action_previewpdf")) {
+        var link = event.target.getAttribute("data-link");
+        window.open(link);
+        return false;
+
+        //   handler.call(event.target, event);
+    }
+});
+
+//
 //		$('#right input[name=action_compose]').live('click', function(){
 //			var form = $('#right form');
 //			var formAction = form.attr('action') + '?' + $(this).fieldSerialize();
@@ -27,7 +29,7 @@
 //					statusMessage(ss.i18n._t('ModelAdmin.SAVED', 'Saved'), 'good');
 //				}
 //
-//				// TODO/SAM: It seems a bit of a hack to have to list all the little updaters here. 
+//				// TODO/SAM: It seems a bit of a hack to have to list all the little updaters here.
 //				// Is jQuery.live a solution?
 //				Behaviour.apply(); // refreshes ComplexTableField
 //				if(window.onresize) window.onresize();
@@ -35,6 +37,3 @@
 //
 //			return false;
 //		});
-	})
-	
-})(jQuery);

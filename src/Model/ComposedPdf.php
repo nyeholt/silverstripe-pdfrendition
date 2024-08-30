@@ -3,47 +3,45 @@
 namespace Symbiote\PdfRendition\Model;
 
 use Exception;
-
-use Symbiote\PdfRendition\Model\ComposedPdfFile;
-use SilverStripe\ORM\DataObject;
-use SilverStripe\View\Requirements;
-use SilverStripe\Control\Session;
-use SilverStripe\Forms\LiteralField;
-use SilverStripe\Forms\TreeDropdownField;
-use SilverStripe\Forms\DropdownField;
-use SilverStripe\Forms\FormAction;
 use SilverStripe\Assets\FileNameFilter;
 use SilverStripe\Assets\Folder;
-use SilverStripe\Control\Director;
 use SilverStripe\Control\Controller;
+use SilverStripe\Control\Director;
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\LiteralField;
+use SilverStripe\Forms\TreeDropdownField;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\View\Requirements;
 use Symbiote\PdfRendition\Service\PDFRenditionService;
 
 /**
- *	@authors Marcus Nyeholt <marcus@symbiote.com.au> and Nathan Glasl <nathan@symbiote.com.au>
- *	@license BSD http://silverstripe.org/BSD-license
+ *  @authors Marcus Nyeholt <marcus@symbiote.com.au> and Nathan Glasl <nathan@symbiote.com.au>
+ *  @license BSD http://silverstripe.org/BSD-license
  */
 
 class ComposedPdf extends DataObject
 {
-
     private static $table_name = 'ComposedPdf';
 
-    private static $db = array(
-        'Title'                    => 'Varchar(125)',
-        'TableOfContents'        => 'Boolean',
-        'Description'            => 'HTMLText',
-        'Template'                => 'Varchar',
-    );
+    private static $db = [
+        'Title' => 'Varchar(125)',
+        'TableOfContents' => 'Boolean',
+        'Description' => 'HTMLText',
+        'Template' => 'Varchar'
+    ];
 
-    private static $defaults = array();
+    private static $defaults = [];
 
-    private static $has_one = array(
-        'Page'                    => 'Page',
-    );
+    private static $has_one = [
+        'Page' => 'Page'
+    ];
 
-    private static $has_many = array(
-        'Pdfs'                    => ComposedPdfFile::class,
-    );
+    private static $has_many = [
+        'Pdfs' => ComposedPdfFile::class
+    ];
+
+    private static $template_paths = [];
 
     public function onBeforeWrite()
     {
@@ -58,28 +56,50 @@ class ComposedPdf extends DataObject
         $fields = parent::getCMSFields();
 
         if ($this->ID) {
-
             // If a pdf composition has completed, alert the user of the success.
 
             Requirements::css('symbiote/silverstripe-pdfrendition: client/css/cms-custom.css');
 
             if (Controller::has_curr() && Controller::curr()->getRequest()->getSession()->get('PdfComposed')) {
-                $fields->addFieldToTab('Root.Main', new LiteralField('ComposeMessage', '<div class="pdfresult message good">This pdf has successfully been composed.</div>'), 'Title');
+                $fields->addFieldToTab(
+                    'Root.Main',
+                    new LiteralField(
+                        'ComposeMessage',
+                        '<div class="pdfresult message good">This pdf has successfully been composed.</div>'
+                    ),
+                    'Title'
+                );
                 Controller::curr()->getRequest()->getSession()->clear('PdfComposed');
             }
 
             // Add buttons to preview/compose the current pdf.
 
-            //			$fields->addFieldToTab('Root.Main', new LiteralField('PreviewLink', '<div class="field"><a href="admin/pdfs/' . $this->ClassName . '/previewpdf?ID=' . $this->ID.'" target="_blank" class="pdfaction action action ss-ui-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">Preview</a>'), 'Title');
-            //			$fields->addFieldToTab('Root.Main', new LiteralField('ComposeLink', '<div><a href="admin/pdfs/' . $this->ClassName . '/compose?ID=' . $this->ID.'" class="pdfaction action action ss-ui-action-constructive ss-ui-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-state-hover">Compose</a></div></div>'), 'Title');
+//          $fields->addFieldToTab('Root.Main', new LiteralField('PreviewLink', '<div class="field"><a href="admin/pdfs/' . $this->ClassName . '/previewpdf?ID=' . $this->ID.'" target="_blank" class="pdfaction action action ss-ui-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">Preview</a>'), 'Title');
+//          $fields->addFieldToTab('Root.Main', new LiteralField('ComposeLink', '<div><a href="admin/pdfs/' . $this->ClassName . '/compose?ID=' . $this->ID.'" class="pdfaction action action ss-ui-action-constructive ss-ui-button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-state-hover">Compose</a></div></div>'), 'Title');
 
             $pdfs = $fields->fieldByName('Pdfs');
         } else {
             $fields->removeByName('Pdfs');
         }
 
-        $fields->addFieldToTab('Root.Main', new TreeDropdownField('PageID', _t('ComposedPdf.ROOT_PAGE', 'Root Page'), 'Page'), 'Description');
-        $fields->addFieldToTab('Root.Main', new DropdownField('Template', _t('ComposedPdf.TEMPLATE', 'Template'), $this->templateSource()), 'Description');
+        $fields->addFieldToTab(
+            'Root.Main',
+            new TreeDropdownField(
+                'PageID',
+                _t('ComposedPdf.ROOT_PAGE', 'Root Page'),
+                'Page'
+            ),
+            'Description'
+        );
+        $fields->addFieldToTab(
+            'Root.Main',
+            new DropdownField(
+                'Template',
+                _t('ComposedPdf.TEMPLATE', 'Template'),
+                $this->templateSource()
+            ),
+            'Description'
+        );
 
         return $fields;
     }
@@ -151,9 +171,6 @@ class ComposedPdf extends DataObject
         return Folder::find_or_make($folderName);
     }
 
-
-    public static $template_paths = array();
-
     public function templatePaths()
     {
         if (!count(self::$template_paths)) {
@@ -177,7 +194,7 @@ class ComposedPdf extends DataObject
     public function templateSource()
     {
         $paths = self::templatePaths();
-        $templates = array("" => _t('ComposedPdf.NONE', 'None'));
+        $templates = ["" => _t('ComposedPdf.NONE', 'None')];
 
         if (isset($paths) && count($paths)) {
             $absPath = Director::baseFolder();

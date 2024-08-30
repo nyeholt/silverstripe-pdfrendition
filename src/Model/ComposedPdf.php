@@ -13,6 +13,7 @@ use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\TreeDropdownField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\View\Requirements;
+use SilverStripe\View\SSViewer;
 use Symbiote\PdfRendition\Service\PDFRenditionService;
 
 /**
@@ -151,14 +152,11 @@ class ComposedPdf extends DataObject
             throw new Exception("Please specify a template before rendering.");
         }
 
-        $paths = $this->templatePaths();
+        $templates = SSViewer::get_templates_by_class(get_class($this), '_PlainPdf', __CLASS__);
 
-        $templates = [];
-        foreach ($paths as $p) {
-            $templates[] = $p . '/' . $this->Template . '.ss';
-        }
+        $template = SSViewer::chooseTemplate($templates);
 
-        $content = $this->renderWith($templates);
+        $content = $this->renderWith($template);
         Requirements::restore();
 
         return $content;
@@ -179,7 +177,7 @@ class ComposedPdf extends DataObject
             }
 
             if (file_exists(Director::baseFolder() . DIRECTORY_SEPARATOR . 'vendor/symbiote/silverstripe-pdfrendition/templates/pdfs')) {
-                self::$template_paths[] = 'vendor/symbiote/silverstripe-pdfrendition/templates/pdfs';
+                self::$template_paths[] = 'symbiote/silverstripe-pdfrendition:templates/pdfs';
             }
         }
 
@@ -193,6 +191,7 @@ class ComposedPdf extends DataObject
      */
     public function templateSource()
     {
+
         $paths = self::templatePaths();
         $templates = ["" => _t('ComposedPdf.NONE', 'None')];
 
